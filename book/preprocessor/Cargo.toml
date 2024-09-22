@@ -5,7 +5,7 @@
 #
 
 [package]
-name = "mdbook-sel4-tutorial"
+name = "mdbook-sel4-rust-training"
 version = "0.1.0"
 authors = ["Nick Spinale <nick.spinale@coliasgroup.com>"]
 edition = "2021"
@@ -17,5 +17,8 @@ mdbook = "0.4.36"
 regex = "1.10"
 semver = "1"
 serde_json = "1"
+git2 = "0.19.0"
+itertools = "0.13.0"
+either = "1.13.0"
 
 [workspace]

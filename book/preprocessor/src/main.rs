@@ -4,27 +4,35 @@
 // SPDX-License-Identifier: BSD-2-Clause
 //
 
+use std::env;
+use std::fmt::Write;
+use std::io;
+use std::ops::RangeBounds;
+use std::path::Path;
+
 use clap::{Arg, Command};
 use mdbook::book::{Book, BookItem};
 use mdbook::errors::Error;
 use mdbook::preprocess::{CmdPreprocessor, Preprocessor, PreprocessorContext};
 use regex::{Captures, Regex};
 use semver::{Version, VersionReq};
-use std::env;
-use std::fmt::Write;
-use std::io;
-use std::path::PathBuf;
+
+use mdbook_sel4_rust_training::{Step, Steps};
 
 fn main() {
     let matches = Command::new("")
         .subcommand(Command::new("supports").arg(Arg::new("renderer").required(true)))
         .get_matches();
 
+    let top_level_local_root = env::var("MDBOOK_TOP_LEVEL_LOCAL_ROOT").unwrap();
+    let last_step_rev = env::var("MDBOOK_CODE_LAST_STEP_REV").unwrap();
+
+    let steps = Steps::new_simple(top_level_local_root, &last_step_rev);
+
     let preprocessor = This {
-        gh_link_local_root: env::var("MDBOOK_GH_LINK_LOCAL_ROOT").unwrap().into(),
-        gh_link_repo: env::var("MDBOOK_GH_LINK_REPO").unwrap(),
-        gh_link_rev: env::var("MDBOOK_GH_LINK_REV").unwrap(),
+        code_gh_root: env::var("MDBOOK_CODE_GITHUB_ROOT").unwrap(),
         manual_url: env::var("MDBOOK_MANUAL_URL").unwrap(),
+        steps,
     };
 
     if let Some(sub_args) = matches.subcommand_matches("supports") {
@@ -58,22 +66,16 @@ fn handle_preprocessing(pre: &dyn Preprocessor) -> Result<(), Error> {
 }
 
 struct This {
-    gh_link_local_root: PathBuf,
-    gh_link_repo: String,
-    gh_link_rev: String,
+    code_gh_root: String,
     manual_url: String,
+    steps: Steps,
 }
 
 impl This {
     fn render_fragment_with_gh_link(&self, attrs: &str, link: &GitHubLink) -> String {
         let link_text = link.text();
-        let range_suffix = link.range_suffix();
-        let local_path = self
-            .gh_link_local_root
-            .join(&link.path())
-            .display()
-            .to_string();
         let url = self.gh_link_url(link, false);
+        let fragment = link.fragment(&self.steps);
 
         let mut s = String::new();
 
@@ -89,7 +91,7 @@ impl This {
         writeln!(&mut s, "<div class=\"fragment-with-gh-link-fragment\">").unwrap();
         writeln!(&mut s, "").unwrap();
         writeln!(&mut s, "```{attrs}").unwrap();
-        writeln!(&mut s, "{{{{#include {local_path}{range_suffix}}}}}").unwrap();
+        writeln!(&mut s, "{}", fragment).unwrap();
         writeln!(&mut s, "```").unwrap();
         writeln!(&mut s, "").unwrap();
         writeln!(&mut s, "</div>").unwrap();
@@ -100,20 +102,22 @@ impl This {
     }
 
     fn render_gh_link(&self, link: &GitHubLink) -> String {
-        let local_path = self.gh_link_local_root.join(link.path());
         format!(
             "[{}]({})",
             link.text(),
-            self.gh_link_url(link, local_path.is_dir()),
+            self.gh_link_url(
+                link,
+                self.steps.kind(link.step(), link.path()).is_directory()
+            ),
         )
     }
 
     fn gh_link_url(&self, link: &GitHubLink, is_directory: bool) -> String {
         format!(
             "https://github.com/{}/{}/{}/{}",
-            self.gh_link_repo,
+            self.code_gh_root,
             if is_directory { "tree" } else { "blob" },
-            self.gh_link_rev,
+            self.steps.commit_hash(link.step()),
             link.url_suffix(),
         )
     }
@@ -122,25 +126,55 @@ impl This {
         link.render(&self.manual_url)
     }
 
-    fn render_rustdoc_link(&self, parent_names: &[String], config: &str, path: &str, text: &str) -> String {
+    fn render_rustdoc_link(
+        &self,
+        chapter_path: &Path,
+        config: &str,
+        path: &str,
+        text: &str,
+    ) -> String {
         let target_suffix = match config {
             "root-task" => "",
             "microkit" => "-microkit",
             _ => panic!(),
         };
         let mut up = String::new();
-        for _parent in parent_names {
+        for _ in chapter_path.iter().skip(1) {
             up.push_str("../");
         }
+        format!("[{text}]({up}rustdoc/{config}/aarch64-sel4{target_suffix}/doc/{path})",)
+    }
+
+    fn render_step_header(&self, step: &Step, text: &str) -> String {
+        let long_rev = self.steps.commit_hash(step);
+        let commit_link = self.step_commit_link(step);
+        let mut s = String::new();
+        // writeln!(&mut s, "## Step {step} [<i class=\"fa fa-github\"></i>]({commit_link}) `{short_rev}`").unwrap();
+        // writeln!(&mut s, "## Step {step} `{short_rev}` [<i class=\"fa fa-github\"></i>]({commit_link})").unwrap();
+        // writeln!(&mut s, "<span class=\"step-heading\">").unwrap();
+        write!(&mut s, "## Step {step}{text}").unwrap();
+        write!(&mut s, "&nbsp;").unwrap();
+        write!(&mut s, "&nbsp;").unwrap();
+        write!(&mut s, "&nbsp;").unwrap();
+        write!(&mut s, "<span class=\"step-heading-clickable\" onclick=\"navigator.clipboard.writeText('{long_rev}')\">&nbsp;<i class=\"fa fa-copy\"></i>&nbsp;</span>").unwrap();
+        write!(&mut s, "<a class=\"step-heading-clickable\" href=\"{commit_link}\">&nbsp;<i class=\"fa fa-github\"></i>&nbsp;</a>").unwrap();
+        writeln!(&mut s, "").unwrap();
+        // writeln!(&mut s, "</span>").unwrap();
+        s
+    }
+
+    fn step_commit_link(&self, step: &Step) -> String {
         format!(
-            "[{text}]({up}rustdoc/{config}/aarch64-sel4{target_suffix}/doc/{path})",
+            "https://github.com/{}/commit/{}",
+            self.code_gh_root,
+            self.steps.commit_hash(step),
         )
     }
 }
 
 impl Preprocessor for This {
     fn name(&self) -> &str {
-        "sel4-tutorial"
+        "sel4-rust-training"
     }
 
     fn supports_renderer(&self, renderer: &str) -> bool {
@@ -155,7 +189,7 @@ impl Preprocessor for This {
                     ch.content = r.replace_all(&ch.content, |captures: &Captures| {
                         self.render_fragment_with_gh_link(
                             captures.name("attrs").unwrap().as_str(),
-                            &GitHubLink::parse(captures.name("link").unwrap().as_str()).unwrap(),
+                            &GitHubLink::parse(captures.name("link").unwrap().as_str()),
                         )
                     }).into_owned();
                 }
@@ -163,7 +197,7 @@ impl Preprocessor for This {
                     let r = Regex::new(r"\{\{\s*#gh_link\s+(?<link>.*?)\s*\}\}").unwrap();
                     ch.content = r.replace_all(&ch.content, |captures: &Captures| {
                         self.render_gh_link(
-                            &GitHubLink::parse(captures.name("link").unwrap().as_str()).unwrap(),
+                            &GitHubLink::parse(captures.name("link").unwrap().as_str()),
                         )
                     }).into_owned();
                 }
@@ -179,11 +213,40 @@ impl Preprocessor for This {
                     let r = Regex::new(r"\{\{\s*#rustdoc_link\s+(?<config>.*?)\s+(?<path>.*?)\s+(?<text>.*?)\s*\}\}").unwrap();
                     ch.content = r.replace_all(&ch.content, |captures: &Captures| {
                         self.render_rustdoc_link(
-                            &ch.parent_names,
+                            ch.path.as_ref().unwrap(),
                             captures.name("config").unwrap().as_str(),
                             captures.name("path").unwrap().as_str(),
                             captures.name("text").unwrap().as_str(),
                         )
+                    }).into_owned();
+                }
+                {
+                    let r = Regex::new(r"\{\{\s*#step\s+(?<step>[0-9]+(\.[A-Z])?)(?<text>.*?)\}\}").unwrap();
+                    ch.content = r.replace_all(&ch.content, |captures: &Captures| {
+                        self.render_step_header(
+                            &Step::parse(captures.name("step").unwrap().as_str()),
+                            captures.name("text").unwrap().as_str(),
+                        )
+                    }).into_owned();
+                }
+                {
+                    let r = Regex::new(r"\{\{\s*#rev_of_step_0(\s+(?<len>[0-9]+))?\s*\}\}").unwrap();
+                    ch.content = r.replace_all(&ch.content, |captures: &Captures| {
+                        let len = captures.name("len").map(|s| s.as_str().parse().unwrap()).unwrap_or(40);
+                        format!("{}", &self.steps.commit_hash(&Step::parse("0"))[..len])
+                    }).into_owned();
+                }
+                {
+                    let r = Regex::new(r"\{\{\s*#rev_of_last_step(\s+(?<len>[0-9]+))?\s*\}\}").unwrap();
+                    ch.content = r.replace_all(&ch.content, |captures: &Captures| {
+                        let len = captures.name("len").map(|s| s.as_str().parse().unwrap()).unwrap_or(40);
+                        format!("{}", &self.steps.commit_hash(self.steps.last_step())[..len])
+                    }).into_owned();
+                }
+                {
+                    let r = Regex::new(r"\{\{\s*#gh_repo_url\s*\}\}").unwrap();
+                    ch.content = r.replace_all(&ch.content, |_captures: &Captures| {
+                        format!("https://github.com/{}", self.code_gh_root)
                     }).into_owned();
                 }
             }
@@ -196,26 +259,35 @@ impl Preprocessor for This {
 #[derive(Debug)]
 struct GitHubLink {
     text: Option<String>,
+    step: Step,
+    show_step: bool,
     hidden_path_part: Option<String>,
     visible_path_part: String,
-    start: Option<String>,
-    end: Option<String>,
+    start: Option<usize>,
+    end: Option<usize>,
 }
 
 impl GitHubLink {
-    fn parse(s: &str) -> Option<Self> {
+    fn parse(s: &str) -> Self {
         let r = Regex::new(
             r"(?x)
             ^
             (\[(?<text>.*?)\]\s+)?
+            (@(?<hide_step>-)?(?<step>.*?)\s+)?
             (\((?<hidden_path_part>.*?)\))?
             (?<visible_path_part>.*?)(:(?<start>\d+)(:(?<end>\d+))?)?
             $
         ",
         )
         .unwrap();
-        r.captures(s).map(|captures| Self {
+        let captures = r.captures(s).unwrap();
+        let link = Self {
             text: captures.name("text").map(|m| m.as_str().to_owned()),
+            step: captures
+                .name("step")
+                .map(|m| Step::parse(m.as_str()))
+                .unwrap_or_default(),
+            show_step: captures.name("step").is_some() && captures.name("hide_step").is_none(),
             hidden_path_part: captures
                 .name("hidden_path_part")
                 .map(|m| m.as_str().to_owned()),
@@ -224,9 +296,20 @@ impl GitHubLink {
                 .unwrap()
                 .as_str()
                 .to_owned(),
-            start: captures.name("start").map(|m| m.as_str().to_owned()),
-            end: captures.name("end").map(|m| m.as_str().to_owned()),
-        })
+            start: captures.name("start").map(|m| m.as_str().parse().unwrap()),
+            end: captures.name("end").map(|m| m.as_str().parse().unwrap()),
+        };
+        if link.show_step {
+            assert!(!link.step.is_start());
+        }
+        if link.start.is_none() {
+            assert!(link.end.is_none());
+        }
+        link
+    }
+
+    fn step(&self) -> &Step {
+        &self.step
     }
 
     fn path(&self) -> String {
@@ -242,24 +325,16 @@ impl GitHubLink {
         if let Some(text) = &self.text {
             text.to_owned()
         } else {
-            self.visible()
+            self.default_text()
         }
     }
 
-    fn visible(&self) -> String {
+    fn default_text(&self) -> String {
         let mut s = String::new();
         write!(&mut s, "{}", self.visible_path_part).unwrap();
         write!(&mut s, "{}", self.range_suffix()).unwrap();
-        s
-    }
-
-    fn range_suffix(&self) -> String {
-        let mut s = String::new();
-        if let Some(start) = &self.start {
-            write!(&mut s, ":{start}").unwrap();
-            if let Some(end) = &self.end {
-                write!(&mut s, ":{end}").unwrap();
-            }
+        if self.show_step {
+            write!(&mut s, " after {}", self.step()).unwrap();
         }
         s
     }
@@ -270,6 +345,30 @@ impl GitHubLink {
             write!(&mut s, "#L{start}").unwrap();
             if let Some(end) = &self.end {
                 write!(&mut s, "-L{end}").unwrap();
+            }
+        }
+        s
+    }
+
+    fn fragment(&self, steps: &Steps) -> String {
+        match (&self.start, &self.end) {
+            (Some(start), Some(end)) => self.fragment_helper(steps, start..=end),
+            (Some(start), None) => self.fragment_helper(steps, start..=start),
+            (None, Some(end)) => self.fragment_helper(steps, ..=end),
+            (None, None) => self.fragment_helper(steps, ..),
+        }
+    }
+
+    fn fragment_helper(&self, steps: &Steps, bounds: impl RangeBounds<usize>) -> String {
+        steps.fragment(self.step(), self.path(), bounds)
+    }
+
+    fn range_suffix(&self) -> String {
+        let mut s = String::new();
+        if let Some(start) = &self.start {
+            write!(&mut s, ":{start}").unwrap();
+            if let Some(end) = &self.end {
+                write!(&mut s, ":{end}").unwrap();
             }
         }
         s
@@ -328,10 +427,12 @@ impl ManualLink {
             s
         });
         let fragment = if let Some(section) = &self.section {
-            let ty = if section.contains('.') {
-                "section"
-            } else {
-                "chapter"
+            let ty = match section.chars().filter(|c| *c == '.').count() {
+                0 => "chapter",
+                1 => "section",
+                2 => "subsection",
+                3 => "subsubsection",
+                _ => panic!(),
             };
             format!("#{ty}.{section}")
         } else {
