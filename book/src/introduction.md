@@ -4,7 +4,7 @@
     SPDX-License-Identifier: CC-BY-SA-4.0
 -->
 
-# Introduction
+# Tutorial: Using Rust in seL4 Userspace
 
 Support for Rust in seL4 userspace has been an official seL4 Foundation project since November 2023:
 
