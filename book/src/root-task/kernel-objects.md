@@ -86,7 +86,7 @@ However, some capability invocations allow us to refer to a capability slot in a
 In these cases, we must provide:
 - A CPtr, interpreted in the context of the current thread's CSpace, which points to the target CSpace's root CNode
 - A CPtr, interpreted in the context of the target CSpace, which points to the target capability slot
-- A depth, which is the number of bits of the second CPtr to interpret. This allows for the second CPtr to point to a CNode. Why this is necessary is outside the scope of this training, but you can read about it in {{#manual_link #2.4 (CSpace Addressing)}}.
+- A depth, which is the number of bits of the second CPtr to interpret. This allows for the second CPtr to point to a CNode. Why this is necessary is outside the scope of this tutorial, but you can read about it in {{#manual_link #2.4 (CSpace Addressing)}}.
 
 Consider, for example, the {{#manual_link [`seL4_CNode_Mint`] #10.3.1.4}} capability invocation.
 `dest_*` and `src_*` are both capability slots addressed in this way.
