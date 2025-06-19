@@ -67,3 +67,8 @@ checkout-last-step:
 check-licenses:
 	reuse lint
 	cd $(code_dir) && reuse lint
+
+.PHONY: for-docsite
+for-docsite: | $(build_dir)
+	cd $(code_dir) && $(MAKE) rustdoc && $(MAKE) prune-rustdoc
+	cd $(book_dir) && $(MAKE) build-preprocessor && $(MAKE) build

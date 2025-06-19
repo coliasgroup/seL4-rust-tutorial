@@ -10,7 +10,7 @@ build_dir := build
 
 top_level_dir := ..
 code_dir := $(top_level_dir)/code
-code_gh_url := coliasgroup/seL4-summit-2024-rust-training-code
+code_gh_url := coliasgroup/seL4-rust-tutorial-code
 manual_url := https://sel4.systems/Info/Docs/seL4-manual-13.0.0.pdf
 
 mdbook_env := \
@@ -47,7 +47,7 @@ dst_rustdoc_dir := $(build_dir)/rustdoc
 
 .PHONY: build-book
 build-book: build-book-mdbook
-	set -eu -o pipefail; \
+	set -eu; \
 	src=$(src_rustdoc_dir); \
 	dst=$(dst_rustdoc_dir); \
 	[ ! -e "$$dst" ]; \

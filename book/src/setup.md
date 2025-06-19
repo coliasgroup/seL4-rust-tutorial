@@ -6,7 +6,7 @@
 
 # Setup
 
-This training session is presented as a linear series of patches to [{{#gh_repo_url}}]({{#gh_repo_url}}), starting at commit `{{#rev_of_step_0 12}}`, and ending with commit `{{#rev_of_last_step 12}}`.
+This tutorial is presented as a linear series of patches to [{{#gh_repo_url}}]({{#gh_repo_url}}), starting at commit `{{#rev_of_step_0 12}}`, and ending with commit `{{#rev_of_last_step 12}}`.
 Each patch, or step, as we shall call them, is an instructive modification to a code example.
 You are encouraged (but by no means required) to attempt those marked as exercises in this text on your own.
 Note that while most step patches include tests, the reader is not expected to write tests for exercises themselves.
@@ -15,7 +15,7 @@ Clone the repository and checkout the starting commit:
 
 ```
 git clone {{#gh_repo_url}}
-cd seL4-summit-2024-rust-training-code
+cd seL4-rust-tutorial-code
 git checkout {{#rev_of_step_0 12}}
 ```
 

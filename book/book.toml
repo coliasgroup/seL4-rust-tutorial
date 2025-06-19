@@ -13,10 +13,10 @@ src = "src"
 [build]
 build-dir = "build"
 
-[preprocessor.sel4-rust-training]
+[preprocessor.sel4-rust-tutorial]
 before = [ "links" ]
 
 [output.html]
-additional-css = ["preprocessor/assets/sel4-rust-training.css"]
-additional-js = ["preprocessor/assets/sel4-rust-training.js"]
-git-repository-url = "https://github.com/coliasgroup/seL4-summit-2024-rust-training"
+additional-css = ["preprocessor/assets/sel4-rust-tutorial.css"]
+additional-js = ["preprocessor/assets/sel4-rust-tutorial.js"]
+git-repository-url = "https://github.com/coliasgroup/seL4-rust-tutorial"

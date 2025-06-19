@@ -6,7 +6,6 @@
 
 # Summary
 
-[Using Rust in seL4 Userspace](README.md)
 [Introduction](introduction.md)
 [Setup](setup.md)
 <!-- [Preprocessor Test](preprocessor-test.md) -->
