@@ -6,7 +6,7 @@
 
 use clap::{Arg, Command};
 
-use mdbook_sel4_rust_training::Steps;
+use mdbook_sel4_rust_tutorial::Steps;
 
 fn main() {
     let matches = Command::new("")

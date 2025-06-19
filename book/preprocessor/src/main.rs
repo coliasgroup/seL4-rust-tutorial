@@ -17,7 +17,7 @@ use mdbook::preprocess::{CmdPreprocessor, Preprocessor, PreprocessorContext};
 use regex::{Captures, Regex};
 use semver::{Version, VersionReq};
 
-use mdbook_sel4_rust_training::{Step, Steps};
+use mdbook_sel4_rust_tutorial::{Step, Steps};
 
 fn main() {
     let matches = Command::new("")
@@ -174,7 +174,7 @@ impl This {
 
 impl Preprocessor for This {
     fn name(&self) -> &str {
-        "sel4-rust-training"
+        "sel4-rust-tutorial"
     }
 
     fn supports_renderer(&self, renderer: &str) -> bool {
