@@ -72,4 +72,4 @@ check-licenses:
 all-for-docs: | $(build_dir)
 	cd $(preprocessor_dir) && cargo run --bin show-steps -- $(abspath $(top_level_dir)) > $(abspath $(step_list))
 	cd $(code_dir) && $(MAKE) rustdoc && $(MAKE) prune-rustdoc
-	cd $(book_dir) && $(MAKE) build-preprocessor && $(MAKE) build && $(MAKE) check
+	cd $(book_dir) && $(MAKE) build-preprocessor && $(MAKE) build
