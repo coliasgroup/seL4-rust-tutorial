@@ -68,8 +68,7 @@ check-licenses:
 	reuse lint
 	cd $(code_dir) && reuse lint
 
-.PHONY: all-for-docs
-all-for-docs: | $(build_dir)
-	cd $(preprocessor_dir) && cargo run --bin show-steps -- $(abspath $(top_level_dir)) > $(abspath $(step_list))
+.PHONY: all-in-container
+all-in-container: | $(build_dir)
 	cd $(code_dir) && $(MAKE) rustdoc && $(MAKE) prune-rustdoc
 	cd $(book_dir) && $(MAKE) build-preprocessor && $(MAKE) build
