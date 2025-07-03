@@ -47,7 +47,7 @@ dst_rustdoc_dir := $(build_dir)/rustdoc
 
 .PHONY: build-book
 build-book: build-book-mdbook
-	set -eu -o pipefail; \
+	set -eu; \
 	src=$(src_rustdoc_dir); \
 	dst=$(dst_rustdoc_dir); \
 	[ ! -e "$$dst" ]; \
