@@ -4,12 +4,6 @@
     SPDX-License-Identifier: CC-BY-SA-4.0
 -->
 
-```
-!!! NOTE !!!
-```
-
-_This chapter was rushed due to time constraints. Call over the instructor if you want to properly learn about this topic_.
-
 # Shared Memory
 
 This chapter covers interacting with shared memory from protection domains written in Rust.

@@ -19,7 +19,6 @@ The exports of this project covered in this tutorial are:
 
 [Part I](#the-root-task) covers the Rust bindings for the seL4 API and the runtime for root tasks.
 Familiarity with the seL4 API isn't necessarily assumed or required, but this text doesn't introduce its elements in as much detail as the {{#manual_link [seL4 Manual]}}.
-Please let the instructor know if you'd like an introduction or review for any seL4 API concepts or details.
 
 [Part II](#sel4-microkit) is much shorter, and covers the Rust language runtime for seL4 Microkit protection domains and implementation of the Microkit API.
 This part does assume that the reader is familiar with the basics of the Microkit framework and API, or is using a companion resource to learn about the Microkit in parallel.

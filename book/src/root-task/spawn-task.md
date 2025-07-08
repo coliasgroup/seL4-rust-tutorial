@@ -30,10 +30,9 @@ This runtime is built using a few Rust langauge runtime building block crates:
 - {{#rustdoc_link root-task sel4_panicking_env/index.html `sel4-panicking-env`}}
 
 This minimal, ad-hoc language runtime is a neat, instructive piece of code.
-If you are interested in learning more about building a new Rust language runtime out of the building blocks provided by the [rust-sel4](https://github.com/seL4/rust-sel4) project, let the instructor know.
+It shows how one can build a new Rust language runtime out of the building blocks provided by the [rust-sel4](https://github.com/seL4/rust-sel4) project.
 
-Explore the {{#gh_link [root task] @-7 workspaces/root-task/spawn-task/src}} and {{#gh_link [child task] @-7 workspaces/root-task/spawn-task/child/src}} at will.
-Let the instructor know if you would like to discuss any particular aspect of it.
+Explore the {{#gh_link [root task] @-7 workspaces/root-task/spawn-task/src}} and {{#gh_link [child task] @-7 workspaces/root-task/spawn-task/child/src}}.
 
 Right now, all the child task does is send a test message over an endpoint back to the root task.
 The challenge in this chapter, [step 7.E](#step-7e-challenge), is to extend the root task so that it sets up the child task to be able to interact with the serial device, and to extend the child task to implement the same echo loop as in [./serial-device.html#step-5h].
