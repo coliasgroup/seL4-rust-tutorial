@@ -6,7 +6,7 @@
 
 # Tutorial: Using Rust in seL4 Userspace
 
-Support for Rust in seL4 userspace has been an official seL4 Foundation project since November 2023:
+seL4 has official support for Rust in userspace, funded by the seL4 Foundation:
 
 <https://github.com/seL4/rust-sel4>
 
