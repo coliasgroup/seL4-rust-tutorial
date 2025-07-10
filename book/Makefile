@@ -42,7 +42,7 @@ build-book-mdbook:
 	$(mdbook_env) \
 		mdbook build
 
-src_rustdoc_dir := $(code_dir)/build/rustdoc
+src_rustdoc_dir := $(code_dir)/build/exported-rustdoc
 dst_rustdoc_dir := $(build_dir)/rustdoc
 
 .PHONY: build-book
