@@ -31,8 +31,7 @@ ci-in-container:
 		git log --format=%B -n 1 HEAD | cat; \
 		$(MAKE) check-step; \
 	done
-	$(MAKE) -C $(code_dir) rustdoc
-	$(MAKE) -C $(code_dir) prune-rustdoc
+	$(MAKE) -C $(code_dir) exported-rustdoc
 
 .PHONY: step-list
 step-list: $(step_list)
