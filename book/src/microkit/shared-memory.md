@@ -34,9 +34,9 @@ We direct the compiler to put this symbol in the `.data` section with `#[link_se
 
 So far, the example protection domains just store pointers to the shared memory regions in their handler state:
 
-{{#fragment_with_gh_link "rust,ignore" @-11 (workspaces/microkit/shared-memory/)pds/client/src/main.rs:14:34}}
+{{#fragment_with_gh_link "rust,ignore" @-11 (workspaces/microkit/shared-memory/)pds/client/src/main.rs:17:31}}
 
-{{#fragment_with_gh_link "rust,ignore" @-11 (workspaces/microkit/shared-memory/)pds/server/src/main.rs:14:34}}
+{{#fragment_with_gh_link "rust,ignore" @-11 (workspaces/microkit/shared-memory/)pds/server/src/main.rs:17:46}}
 
 {{#step 11.A}}
 
