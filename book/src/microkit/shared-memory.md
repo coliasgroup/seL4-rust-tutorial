@@ -50,16 +50,16 @@ You could just turn the virtual addresses we get in our `var!` symbols into poin
 
 {{#step 11.B}}
 
-The under-documented (for now)
-{{#rustdoc_link microkit sel4_externally_shared/index.html `sel4-externally-shared`}}
-provides a way for you to declare a memory region's type and bounds, along with the memory access operations that can safely be used on it, so that you can access it without `unsafe` code.
+The
+{{#rustdoc_link microkit sel4_shared_memory/index.html `sel4-shared-memory`}}
+crate provides a way for you to declare a memory region's type and bounds, along with the memory access operations that can safely be used on it, so that you can access it without `unsafe` code.
 That initial declaration is, however, `unsafe`.
 
-For now, it is a fork of the [`volatile` crate](https://docs.rs/volatile/0.6.1/volatile/index.html), generalized to enable the use of memory access operations beyond just the [`ptr::read_volatile`](https://doc.rust-lang.org/core/ptr/fn.read_volatile.html), [`ptr::write_volatile`](https://doc.rust-lang.org/core/ptr/fn.write_volatile.html), and friends supported by that crate.
 The
-{{#rustdoc_link microkit sel4_externally_shared/type.ExternallySharedRef.html `sel4_externally_shared::ExternallySharedRef`}} type alias is the now-abstract
-{{#rustdoc_link microkit sel4_externally_shared/struct.VolatileRef.html `sel4_externally_shared::VolatileRef`}}
-type instantiated with memory access operations suitable for memory that is shared with another protection domain.
+{{#rustdoc_link microkit sel4_shared_memory/index.html `sel4-shared-memory`}}
+is a thin wrapper around the
+{{#rustdoc_link microkit sel4_shared_memory/index.html `sel4_abstract_ptr`}}
+crate, instantiating its abstract pointer types with memory access operations suitable for memory that is shared with another protection domain.
 
 The
 {{#rustdoc_link microkit sel4_microkit/macro.memory_region_symbol.html `sel4_microkit::memory_region_symbol!`}}

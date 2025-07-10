@@ -142,7 +142,7 @@ impl This {
         for _ in chapter_path.iter().skip(1) {
             up.push_str("../");
         }
-        format!("[{text}]({up}rustdoc/{config}/aarch64-sel4{target_suffix}/doc/{path})",)
+        format!("[{text}]({up}rustdoc/{config}/aarch64-sel4{target_suffix}-unwind/doc/{path})",)
     }
 
     fn render_step_header(&self, step: &Step, text: &str) -> String {
