@@ -18,7 +18,7 @@ The example system description specifies two protection domains, with a channel 
 
 {{#fragment_with_gh_link "xml" @-10 (workspaces/microkit/ipc/)ipc.system:7:20}}
 
-{{#fragment_with_gh_link "rust,ignore" @-10 (workspaces/microkit/ipc/)pds/client/src/main.rs:12:32}}
+{{#fragment_with_gh_link "rust,ignore" @-10 (workspaces/microkit/ipc/)pds/client/src/main.rs:14:36}}
 
 {{#fragment_with_gh_link "rust,ignore" @-10 (workspaces/microkit/ipc/)pds/server/src/main.rs:12:39}}
 

@@ -54,7 +54,7 @@ So, we must always keep one child around so that our progress on advancing the w
 
 {{#fragment_with_gh_link "rust,ignore" @5.C workspaces/root-task/serial-device/src/main.rs:43:49}}
 
-{{#fragment_with_gh_link "rust,ignore" @5.C workspaces/root-task/serial-device/src/main.rs:68:95}}
+{{#fragment_with_gh_link "rust,ignore" @5.C workspaces/root-task/serial-device/src/main.rs:68:97}}
 
 {{#step 5.D}}
 
