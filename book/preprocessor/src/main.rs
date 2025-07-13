@@ -24,14 +24,14 @@ fn main() {
         .subcommand(Command::new("supports").arg(Arg::new("renderer").required(true)))
         .get_matches();
 
-    let top_level_local_root = env::var("MDBOOK_TOP_LEVEL_LOCAL_ROOT").unwrap();
-    let last_step_rev = env::var("MDBOOK_CODE_LAST_STEP_REV").unwrap();
+    let top_level_local_root = env::var("THIS_MDBOOK_TOP_LEVEL_LOCAL_ROOT").unwrap();
+    let last_step_rev = env::var("THIS_MDBOOK_CODE_LAST_STEP_REV").unwrap();
 
     let steps = Steps::new_simple(top_level_local_root, &last_step_rev);
 
     let preprocessor = This {
-        code_gh_root: env::var("MDBOOK_CODE_GITHUB_ROOT").unwrap(),
-        manual_url: env::var("MDBOOK_MANUAL_URL").unwrap(),
+        code_gh_root: env::var("THIS_MDBOOK_CODE_GITHUB_ROOT").unwrap(),
+        manual_url: env::var("THIS_MDBOOK_MANUAL_URL").unwrap(),
         steps,
     };
 
