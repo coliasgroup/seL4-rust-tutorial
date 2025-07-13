@@ -50,10 +50,6 @@ build:
 	$(MAKE) build-preprocessor
 	$(MAKE) build-book
 
-.PHONY: check
-check:
-	linkchecker $(build_dir)/index.html --no-follow-url '.*/rustdoc/.*'
-
 .PHONY: open
 open:
 	open $(build_dir)/index.html

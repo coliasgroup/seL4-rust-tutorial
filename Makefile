@@ -59,32 +59,22 @@ check-each-step:
 		$(MAKE) check-step; \
 	done
 
-.PHONY: book
-book:
-	cd $(book_dir) && \
-		nix-shell \
-			--run '$(MAKE) build && $(MAKE) check'
+assembled_dir := $(build_dir)/assembled
 
-.PHONY: ci-in-container
-ci-in-container: check-each-step
-	$(MAKE) -C $(code_dir) exported-rustdoc
+.PHONY: assemble
+assemble:
+	$(MAKE) -C docker exported-rustdoc
+	nix-shell $(book_dir)/shell.nix \
+		--run '$(MAKE) build'
+	rm -rf $(assembled_dir)
+	mkdir -p $(dir $(assembled_dir))
+	cp -r $(book_dir)/build $(assembled_dir)
+	cp -r $(code_dir)/build/exported-rustdoc $(assembled_dir)/rustdoc
+	nix-shell $(book_dir)/shell.nix \
+		--run 'linkchecker $(assembled_dir)/index.html --no-follow-url ".*/rustdoc/.*"'
 
 .PHONY: ci
 ci:
 	$(MAKE) step-list
-	$(MAKE) -C docker ci-in-container
-	$(MAKE) book
-
-book_for_docsite_dir := $(build_dir)/book-for-docsite
-
-src_rustdoc_dir := $(code_dir)/build/exported-rustdoc
-dst_rustdoc_dir := $(book_for_docsite_dir)/rustdoc
-
-.PHONY: book-for-docsite
-book-for-docsite:
-	cd $(code_dir) && $(MAKE) exported-rustdoc
-	cd $(book_dir) && $(MAKE) build
-	rm -rf $(book_for_docsite_dir)
-	mkdir -p $(dir $(book_for_docsite_dir))
-	cp -r $(book_dir)/build $(book_for_docsite_dir)
-	cp -r $(src_rustdoc_dir) $(dst_rustdoc_dir)
+	$(MAKE) -C docker check-each-step
+	$(MAKE) assemble
