@@ -31,6 +31,14 @@ fn main() {
 
     let preprocessor = This {
         code_gh_root: env::var("THIS_MDBOOK_CODE_GITHUB_ROOT").unwrap(),
+        rustdoc_location: {
+            let val = env::var("THIS_MDBOOK_RUSTDOC_LOCATION_VALUE").unwrap();
+            match env::var("THIS_MDBOOK_RUSTDOC_LOCATION_KIND").unwrap().as_str() {
+                "path" => RustdocLocation::Path(val),
+                "url" => RustdocLocation::Url(val),
+                _ => panic!(),
+            }
+        },
         manual_url: env::var("THIS_MDBOOK_MANUAL_URL").unwrap(),
         steps,
     };
@@ -67,8 +75,14 @@ fn handle_preprocessing(pre: &dyn Preprocessor) -> Result<(), Error> {
 
 struct This {
     code_gh_root: String,
+    rustdoc_location: RustdocLocation,
     manual_url: String,
     steps: Steps,
+}
+
+enum RustdocLocation {
+    Path(String),
+    Url(String),
 }
 
 impl This {
@@ -138,11 +152,21 @@ impl This {
             "microkit" => "-microkit",
             _ => panic!(),
         };
-        let mut up = String::new();
-        for _ in chapter_path.iter().skip(1) {
-            up.push_str("../");
-        }
-        format!("[{text}]({up}rustdoc/{config}/aarch64-sel4{target_suffix}-unwind/doc/{path})",)
+
+        let base = match &self.rustdoc_location {
+            RustdocLocation::Path(path) => {
+                let mut up = String::new();
+                for _ in chapter_path.iter().skip(1) {
+                    up.push_str("../");
+                }
+                format!("{up}{path}")
+            }
+            RustdocLocation::Url(url) => {
+                url.clone()
+            }
+        };
+
+        format!("[{text}]({base}/{config}/aarch64-sel4{target_suffix}-unwind/doc/{path})",)
     }
 
     fn render_step_header(&self, step: &Step, text: &str) -> String {

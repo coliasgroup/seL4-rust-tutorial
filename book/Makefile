@@ -4,7 +4,15 @@
 # SPDX-License-Identifier: BSD-2-Clause
 #
 
-PROD ?= 0
+RUSTDOC_URL ?= file://$(abspath ../code/build/rustdoc)
+
+ifneq ($(RUSTDOC_PATH),)
+rustdoc_location_kind := path
+rustdoc_location_value := $(RUSTDOC_PATH)
+else
+rustdoc_location_kind := url
+rustdoc_location_value := $(RUSTDOC_URL)
+endif
 
 build_dir := build
 
@@ -17,6 +25,8 @@ mdbook_env := \
 	THIS_MDBOOK_TOP_LEVEL_LOCAL_ROOT=$(abspath $(top_level_dir)) \
 	THIS_MDBOOK_CODE_LAST_STEP_REV=$$(cd $(code_dir) && git rev-parse HEAD) \
 	THIS_MDBOOK_CODE_GITHUB_ROOT=$(code_gh_url) \
+	THIS_MDBOOK_RUSTDOC_LOCATION_KIND=$(rustdoc_location_kind) \
+	THIS_MDBOOK_RUSTDOC_LOCATION_VALUE=$(rustdoc_location_value) \
 	THIS_MDBOOK_MANUAL_URL=$(manual_url) \
 	PATH=preprocessor/target/debug:$$PATH
 
