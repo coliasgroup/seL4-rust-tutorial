@@ -64,9 +64,9 @@ assembled_dir := $(build_dir)/assembled
 .PHONY: assemble
 assemble:
 	$(MAKE) -C docker exported-rustdoc
-	RUSTDOC_PATH=rustdoc \
-		nix-shell $(book_dir)/shell.nix \
-			--run '$(MAKE) build'
+	cd $(book_dir) && \
+		RUSTDOC_PATH=rustdoc \
+			nix-shell --run '$(MAKE) build'
 	rm -rf $(assembled_dir)
 	mkdir -p $(dir $(assembled_dir))
 	cp -r $(book_dir)/build $(assembled_dir)
