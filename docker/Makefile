@@ -19,6 +19,6 @@ build run exec rm-container:
 exported-rustdoc:
 	$(MAKE) -C $(real_docker_dir) oneshot CMD='make $@'
 
-.PHONY: ci-in-container
-ci-in-container:
+.PHONY: check-each-step ci-in-container
+check-each-step ci-in-container:
 	$(MAKE) -C $(real_docker_dir) oneshot ROOT=$(ROOT) CMD='make $@'

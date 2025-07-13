@@ -37,31 +37,18 @@ clean-preprocessor:
 	cargo clean $(preprocessor_manifest_path_args)
 
 .PHONY: build-book-mdbook
-build-book-mdbook:
+build-book:
 	$(mdbook_env) \
 		mdbook build
-
-src_rustdoc_dir := $(code_dir)/build/exported-rustdoc
-dst_rustdoc_dir := $(build_dir)/rustdoc
-
-.PHONY: build-book
-build-book: build-book-mdbook
-	set -eu; \
-	src=$(src_rustdoc_dir); \
-	dst=$(dst_rustdoc_dir); \
-	[ ! -e "$$dst" ]; \
-	if [ "$(PROD)" = "1" ]; then \
-		cp -r $$src $$dst; \
-	else \
-		ln -s ../$$src $$dst; \
-	fi
 
 .PHONY: clean-book
 clean-book:
 	rm -rf $(build_dir)
 
 .PHONY: build
-build: build-book
+build:
+	$(MAKE) build-preprocessor
+	$(MAKE) build-book
 
 .PHONY: check
 check:
