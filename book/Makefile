@@ -16,7 +16,6 @@ manual_url := https://sel4.systems/Info/Docs/seL4-manual-13.0.0.pdf
 mdbook_env := \
 	MDBOOK_TOP_LEVEL_LOCAL_ROOT=$(abspath $(top_level_dir)) \
 	MDBOOK_CODE_LAST_STEP_REV=$$(cd $(code_dir) && git rev-parse HEAD) \
-	MDBOOK_CODE_LOCAL_ROOT=$(abspath $(code_dir)) \
 	MDBOOK_CODE_GITHUB_ROOT=$(code_gh_url) \
 	MDBOOK_MANUAL_URL=$(manual_url) \
 	PATH=preprocessor/target/debug:$$PATH
