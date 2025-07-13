@@ -65,6 +65,7 @@ assembled_dir := $(build_dir)/assembled
 assemble:
 	$(MAKE) -C docker exported-rustdoc
 	cd $(book_dir) && \
+		SITE_URL=/seL4-rust-tutorial/ \
 		RUSTDOC_PATH=rustdoc \
 			nix-shell --run '$(MAKE) build'
 	rm -rf $(assembled_dir)

@@ -4,6 +4,8 @@
 # SPDX-License-Identifier: BSD-2-Clause
 #
 
+SITE_URL ?= /
+
 RUSTDOC_URL ?= file://$(abspath ../code/build/rustdoc)
 
 ifneq ($(RUSTDOC_PATH),)
@@ -28,6 +30,7 @@ mdbook_env := \
 	THIS_MDBOOK_RUSTDOC_LOCATION_KIND=$(rustdoc_location_kind) \
 	THIS_MDBOOK_RUSTDOC_LOCATION_VALUE=$(rustdoc_location_value) \
 	THIS_MDBOOK_MANUAL_URL=$(manual_url) \
+	MDBOOK_OUTPUT__HTML__SITE_URL=$(SITE_URL) \
 	PATH=preprocessor/target/debug:$$PATH
 
 .PHONY: none
