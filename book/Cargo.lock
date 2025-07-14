@@ -1079,20 +1079,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "mdbook-sel4-rust-tutorial"
-version = "0.1.0"
-dependencies = [
- "clap",
- "either",
- "git2",
- "itertools",
- "mdbook",
- "regex",
- "semver",
- "serde_json",
-]
-
-[[package]]
 name = "memchr"
 version = "2.7.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2379,3 +2365,34 @@ name = "windows_x86_64_msvc"
 version = "0.53.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "271414315aff87387382ec3d271b52d7ae78726f5d44ac98b4f4030c91880486"
+
+[[package]]
+name = "x-preprocessor"
+version = "0.1.0"
+dependencies = [
+ "clap",
+ "either",
+ "git2",
+ "itertools",
+ "mdbook",
+ "regex",
+ "semver",
+ "serde_json",
+]
+
+[[package]]
+name = "x-show-steps"
+version = "0.1.0"
+dependencies = [
+ "clap",
+ "x-preprocessor",
+]
+
+[[package]]
+name = "x-wrapper"
+version = "0.1.0"
+dependencies = [
+ "clap",
+ "mdbook",
+ "x-preprocessor",
+]

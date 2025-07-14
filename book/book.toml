@@ -8,15 +8,14 @@
 title = "Using Rust in seL4 Userspace"
 authors = ["Nick Spinale <nick.spinale@coliasgroup.com>"]
 multilingual = false
-src = "src"
 
 [build]
 build-dir = "build"
 
-[preprocessor.sel4-rust-tutorial]
+[preprocessor.x-preprocessor]
 before = [ "links" ]
 
 [output.html]
-additional-css = ["preprocessor/assets/sel4-rust-tutorial.css"]
-additional-js = ["preprocessor/assets/sel4-rust-tutorial.js"]
 git-repository-url = "https://github.com/coliasgroup/seL4-rust-tutorial"
+additional-css = ["assets/sel4-rust-tutorial.css"]
+additional-js = ["assets/sel4-rust-tutorial.js"]

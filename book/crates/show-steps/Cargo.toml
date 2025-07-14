@@ -1,0 +1,16 @@
+#
+# Copyright 2025, Colias Group, LLC
+#
+# SPDX-License-Identifier: BSD-2-Clause
+#
+
+[package]
+name = "x-show-steps"
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+x-preprocessor = { path = "../preprocessor" }
+clap = { workspace = true }

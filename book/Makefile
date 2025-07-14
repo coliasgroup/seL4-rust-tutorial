@@ -17,57 +17,42 @@ rustdoc_location_value := $(RUSTDOC_URL)
 endif
 
 build_dir := build
+index_html := $(build_dir)/index.html
 
 top_level_dir := ..
 code_dir := $(top_level_dir)/code
 code_gh_url := coliasgroup/seL4-rust-tutorial-code
 manual_url := https://sel4.systems/Info/Docs/seL4-manual-13.0.0.pdf
 
-mdbook_env := \
-	THIS_MDBOOK_TOP_LEVEL_LOCAL_ROOT=$(abspath $(top_level_dir)) \
-	THIS_MDBOOK_CODE_LAST_STEP_REV=$$(cd $(code_dir) && git rev-parse HEAD) \
-	THIS_MDBOOK_CODE_GITHUB_ROOT=$(code_gh_url) \
-	THIS_MDBOOK_RUSTDOC_LOCATION_KIND=$(rustdoc_location_kind) \
-	THIS_MDBOOK_RUSTDOC_LOCATION_VALUE=$(rustdoc_location_value) \
-	THIS_MDBOOK_MANUAL_URL=$(manual_url) \
+run_mdbook := \
+	X_PREPROCESSOR_TOP_LEVEL_LOCAL_ROOT=$(abspath $(top_level_dir)) \
+	X_PREPROCESSOR_CODE_LAST_STEP_REV=$$(cd $(code_dir) && git rev-parse HEAD) \
+	X_PREPROCESSOR_CODE_GITHUB_ROOT=$(code_gh_url) \
+	X_PREPROCESSOR_RUSTDOC_LOCATION_KIND=$(rustdoc_location_kind) \
+	X_PREPROCESSOR_RUSTDOC_LOCATION_VALUE=$(rustdoc_location_value) \
+	X_PREPROCESSOR_MANUAL_URL=$(manual_url) \
 	MDBOOK_OUTPUT__HTML__SITE_URL=$(SITE_URL) \
-	PATH=preprocessor/target/debug:$$PATH
+		cargo run -p x-wrapper --
 
 .PHONY: none
 none:
 
 .PHONY: clean
-clean: clean-preprocessor clean-book
-
-preprocessor_manifest_path_args := --manifest-path preprocessor/Cargo.toml
-
-.PHONY: build-preprocessor
-build-preprocessor:
-	cargo build $(preprocessor_manifest_path_args)
-
-.PHONY: clean-preprocessor
-clean-preprocessor:
-	cargo clean $(preprocessor_manifest_path_args)
-
-.PHONY: build-book-mdbook
-build-book:
-	$(mdbook_env) \
-		mdbook build
-
-.PHONY: clean-book
-clean-book:
-	rm -rf $(build_dir)
+clean:
+	rm -rf target $(build_dir)
 
 .PHONY: build
 build:
-	$(MAKE) build-preprocessor
-	$(MAKE) build-book
-
-.PHONY: open
-open:
-	open $(build_dir)/index.html
+	$(run_mdbook) build
 
 .PHONY: serve
 serve:
-	$(mdbook_env) \
-		mdbook serve
+	$(run_mdbook) serve
+
+.PHONY: open
+open:
+	open $(index_html)
+
+.PHONY: check
+check:
+	linkchecker $(index_html) --no-follow-url ".*/rustdoc/.*"

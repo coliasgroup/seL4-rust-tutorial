@@ -1,0 +1,17 @@
+#
+# Copyright 2025, Colias Group, LLC
+#
+# SPDX-License-Identifier: BSD-2-Clause
+#
+
+[package]
+name = "x-wrapper"
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+x-preprocessor = { path = "../preprocessor", artifact = "bin" }
+mdbook = { workspace = true }
+clap = { workspace = true }

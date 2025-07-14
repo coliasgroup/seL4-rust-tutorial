@@ -1,0 +1,23 @@
+#
+# Copyright 2025, Colias Group, LLC
+#
+# SPDX-License-Identifier: BSD-2-Clause
+#
+
+[workspace]
+resolver = "2"
+members = [
+    "crates/wrapper",
+    "crates/preprocessor",
+    "crates/show-steps",
+]
+
+[workspace.package]
+version = "0.1.0"
+authors = ["Nick Spinale <nick.spinale@coliasgroup.com>"]
+edition = "2021"
+license = "BSD-2-Clause"
+
+[workspace.dependencies]
+mdbook = { version = "0.4.51", lib = true, artifact = ["bin"] }
+clap = "4.5"

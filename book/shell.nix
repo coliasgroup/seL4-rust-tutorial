@@ -27,7 +27,6 @@ in {
       pkg-config
       openssl
       rustup
-      mdbook
       linkchecker
     ] ++ lib.optionals hostPlatform.isDarwin [
       libiconv

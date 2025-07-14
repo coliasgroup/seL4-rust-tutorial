@@ -7,7 +7,6 @@
 top_level_dir := .
 code_dir := $(top_level_dir)/code
 book_dir := $(top_level_dir)/book
-preprocessor_dir := $(book_dir)/preprocessor
 
 build_dir := build
 step_list := $(build_dir)/steps.txt
@@ -44,9 +43,9 @@ step-list: $(step_list)
 
 .PHONY: $(step_list)
 $(step_list): | $(build_dir)
-	cd $(preprocessor_dir) && \
-		nix-shell ../shell.nix \
-			--run 'cargo run --bin show-steps -- $(abspath $(top_level_dir))' \
+	cd $(book_dir) && \
+		nix-shell \
+			--run 'cargo run -p x-show-steps -- $(abspath $(top_level_dir))' \
 				> $(abspath $@)
 
 .PHONY: check-each-step
@@ -77,6 +76,6 @@ assemble:
 
 .PHONY: ci
 ci:
+	$(MAKE) assemble
 	$(MAKE) step-list
 	$(MAKE) -C docker check-each-step
-	$(MAKE) assemble

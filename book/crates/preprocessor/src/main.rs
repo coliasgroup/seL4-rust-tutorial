@@ -17,29 +17,32 @@ use mdbook::preprocess::{CmdPreprocessor, Preprocessor, PreprocessorContext};
 use regex::{Captures, Regex};
 use semver::{Version, VersionReq};
 
-use mdbook_sel4_rust_tutorial::{Step, Steps};
+use x_preprocessor::{Step, Steps};
 
 fn main() {
     let matches = Command::new("")
         .subcommand(Command::new("supports").arg(Arg::new("renderer").required(true)))
         .get_matches();
 
-    let top_level_local_root = env::var("THIS_MDBOOK_TOP_LEVEL_LOCAL_ROOT").unwrap();
-    let last_step_rev = env::var("THIS_MDBOOK_CODE_LAST_STEP_REV").unwrap();
+    let top_level_local_root = env::var("X_PREPROCESSOR_TOP_LEVEL_LOCAL_ROOT").unwrap();
+    let last_step_rev = env::var("X_PREPROCESSOR_CODE_LAST_STEP_REV").unwrap();
 
     let steps = Steps::new_simple(top_level_local_root, &last_step_rev);
 
     let preprocessor = This {
-        code_gh_root: env::var("THIS_MDBOOK_CODE_GITHUB_ROOT").unwrap(),
+        code_gh_root: env::var("X_PREPROCESSOR_CODE_GITHUB_ROOT").unwrap(),
         rustdoc_location: {
-            let val = env::var("THIS_MDBOOK_RUSTDOC_LOCATION_VALUE").unwrap();
-            match env::var("THIS_MDBOOK_RUSTDOC_LOCATION_KIND").unwrap().as_str() {
+            let val = env::var("X_PREPROCESSOR_RUSTDOC_LOCATION_VALUE").unwrap();
+            match env::var("X_PREPROCESSOR_RUSTDOC_LOCATION_KIND")
+                .unwrap()
+                .as_str()
+            {
                 "path" => RustdocLocation::Path(val),
                 "url" => RustdocLocation::Url(val),
                 _ => panic!(),
             }
         },
-        manual_url: env::var("THIS_MDBOOK_MANUAL_URL").unwrap(),
+        manual_url: env::var("X_PREPROCESSOR_MANUAL_URL").unwrap(),
         steps,
     };
 
@@ -161,9 +164,7 @@ impl This {
                 }
                 format!("{up}{path}")
             }
-            RustdocLocation::Url(url) => {
-                url.clone()
-            }
+            RustdocLocation::Url(url) => url.clone(),
         };
 
         format!("[{text}]({base}/{config}/aarch64-sel4{target_suffix}-unwind/doc/{path})",)
