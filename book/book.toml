@@ -16,6 +16,6 @@ build-dir = "build"
 before = [ "links" ]
 
 [output.html]
-git-repository-url = "https://github.com/coliasgroup/seL4-rust-tutorial"
+git-repository-url = "https://github.com/seL4/seL4-rust-tutorial"
 additional-css = ["assets/sel4-rust-tutorial.css"]
 additional-js = ["assets/sel4-rust-tutorial.js"]

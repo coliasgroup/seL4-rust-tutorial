@@ -21,7 +21,7 @@ index_html := $(build_dir)/index.html
 
 top_level_dir := ..
 code_dir := $(top_level_dir)/code
-code_gh_url := coliasgroup/seL4-rust-tutorial-code
+code_gh_url := seL4/seL4-rust-tutorial-code
 manual_url := https://sel4.systems/Info/Docs/seL4-manual-13.0.0.pdf
 
 run_mdbook := \
