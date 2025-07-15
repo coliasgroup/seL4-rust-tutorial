@@ -6,4 +6,4 @@
 
 [submodule "code"]
 	path = code
-	url = https://github.com/coliasgroup/seL4-rust-tutorial-code.git
+	url = https://github.com/seL4/seL4-rust-tutorial-code.git
