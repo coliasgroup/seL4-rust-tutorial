@@ -40,13 +40,13 @@ The exercises in this chapter are only concerned with the following two function
 
 In this step, we introduce IPC between `secondary_thread_main()` and `interact_with_secondary_thread` by changing
 
-```rust
+```
 inter_thread_nfn: sel4::cap::Notification
 ```
 
 to
 
-```rust
+```
 inter_thread_ep: sel4::cap::Endpoint
 ```
 
@@ -123,13 +123,13 @@ See {{#manual_link #4.2.4 (Calling and Replying)}} for a description of the `seL
 
 **Exercise:** Change the
 
-```rust
+```
 inter_thread_ep.send()
 ```
 
 in `secondary_thread_main()` to
 
-```rust
+```
 inter_thread_ep.call()
 ```
 
