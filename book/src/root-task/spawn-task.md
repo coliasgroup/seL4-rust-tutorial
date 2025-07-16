@@ -74,32 +74,32 @@ This step just adds the `SERIAL_DEVICE_MMIO_PADDR` and `SERIAL_DEVICE_IRQ` const
 Extend the root task so that it sets up the child task to be able to interact with the serial device, and extend the child task to implement the same echo loop as in [./serial-device.html#step-5h-exercise].
 
 <div class="step-hint">
-    <details>
-        <summary>
-            Hint for the root task (click to expand)
-        </summary>
+<details>
+    <summary>
+        Hint for the root task (click to expand)
+    </summary>
 
 Try following this sequence of sub-steps:
-- Allocate `serial_device_frame_cap: sel4::cap::Granule` using `object_allocator.recklessly_allocate_at()`.
-- Map `serial_device_frame_cap` into the child task's address space using `create_child_vspace()`'s `extra_frames` parameter.
-- Similarly to how we did so in steps [5.F](./serial-device.html#step-5f-exercise) and [5.G](./serial-device.html#step-5g-exercise), obtain `irq_handler_cap: sel4::cap::IrqHandler` for `SERIAL_DEVICE_IRQ` (`object_allocator.allocate_slot()` might come in handy), allocate `irq_nfn_cap: sel4::cap::Notification`, and associate `irq_nfn_cap` with `SERIAL_DEVICE_IRQ` using `irq_handler_cap`.
-- Copy `irq_handler_cap` and `irq_nfn_cap` into the child task's CSpace in a similar way to how `child_tcb` and `inter_task_ep` are copied.
+    - Allocate `serial_device_frame_cap: sel4::cap::Granule` using `object_allocator.recklessly_allocate_at()`.
+    - Map `serial_device_frame_cap` into the child task's address space using `create_child_vspace()`'s `extra_frames` parameter.
+    - Similarly to how we did so in steps [5.F](./serial-device.html#step-5f-exercise) and [5.G](./serial-device.html#step-5g-exercise), obtain `irq_handler_cap: sel4::cap::IrqHandler` for `SERIAL_DEVICE_IRQ` (`object_allocator.allocate_slot()` might come in handy), allocate `irq_nfn_cap: sel4::cap::Notification`, and associate `irq_nfn_cap` with `SERIAL_DEVICE_IRQ` using `irq_handler_cap`.
+    - Copy `irq_handler_cap` and `irq_nfn_cap` into the child task's CSpace in a similar way to how `child_tcb` and `inter_task_ep` are copied.
 
-    </details>
+</details>
 </div>
 
 <p></p>
 
 <div class="step-hint">
-    <details>
-        <summary>
-            Hint for the child task (click to expand)
-        </summary>
+<details>
+    <summary>
+        Hint for the child task (click to expand)
+    </summary>
 
 Try following this sequence of sub-steps:
-- Declare constants `IRQ_HANDLER: sel4::cap::IrqHandler` and `IRQ_NFN: sel4::cap::Notification` after `OWN_TCB` and `INTRA_TASK_EP`.
-- Obtain the virtual address of the serial device MMIO frame with `addr_of_page_beyond_image(1)` (recall how `create_child_vspace()`'s `extra_frames` parameter works).
-- Initialize the serial device with `Device::new()` and `Device::init()` (as we did for part of [step 5.E](./serial-device.html#step-5e-exercise)), and use the serial device just like we did in [step 5.H](./serial-device.html#step-5h-exercise).
+    - Declare constants `IRQ_HANDLER: sel4::cap::IrqHandler` and `IRQ_NFN: sel4::cap::Notification` after `OWN_TCB` and `INTRA_TASK_EP`.
+    - Obtain the virtual address of the serial device MMIO frame with `addr_of_page_beyond_image(1)` (recall how `create_child_vspace()`'s `extra_frames` parameter works).
+    - Initialize the serial device with `Device::new()` and `Device::init()` (as we did for part of [step 5.E](./serial-device.html#step-5e-exercise)), and use the serial device just like we did in [step 5.H](./serial-device.html#step-5h-exercise).
 
-    </details>
+</details>
 </div>
