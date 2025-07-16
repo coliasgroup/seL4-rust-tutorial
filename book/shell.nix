@@ -27,6 +27,7 @@ in {
       pkg-config
       openssl
       rustup
+      html5validator
       linkchecker
     ] ++ lib.optionals hostPlatform.isDarwin [
       libiconv

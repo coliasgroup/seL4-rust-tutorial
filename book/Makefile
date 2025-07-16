@@ -53,6 +53,18 @@ serve:
 open:
 	open $(index_html)
 
-.PHONY: check
-check:
+.PHONY: check-html
+check-html:
+	html5validator \
+		--root $(build_dir) \
+		--ignore \
+			'Element "head" is missing a required instance of child element "title".' \
+			'Start tag "a" seen but an element of the same type was already open.' \
+			'Stray end tag "a".'
+
+.PHONY: check-links
+check-links:
 	linkchecker $(index_html) --no-follow-url ".*/rustdoc/.*"
+
+.PHONY: check
+check: check-links check-html
